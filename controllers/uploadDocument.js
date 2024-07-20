@@ -44,6 +44,10 @@ const uploadDocument = (req, res, next) => {
 						if (err) {
 							return reject(err);
 						}
+						console.log('file ID:');
+						console.log('====================================');
+						console.log(file.data.id);
+						console.log('====================================');
 						resolve(file);
 					}
 				);
