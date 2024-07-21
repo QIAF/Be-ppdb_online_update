@@ -142,7 +142,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 			},
 			document_id: {
-				type: Sequelize.Sequelize.STRING,
+				type: Sequelize.STRING,
 				allowNull: true,
 				defaultValue: null,
 			},

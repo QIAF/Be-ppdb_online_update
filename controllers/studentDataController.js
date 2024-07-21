@@ -62,9 +62,9 @@ const getStudentDataById = async (req, res, next) => {
 const createStudentData = async (req, res, next) => {
 	console.log(req.user);
 	console.log(`user id: ${req.user.id}`);
-	return;
+
 	const files = req.files;
-	const user_id = 1;
+	const user_id = req.user.id;
 	const {
 		student_name,
 		student_gender,
@@ -175,7 +175,7 @@ const createStudentData = async (req, res, next) => {
 		const studentDocument = files['studentDocument'];
 		console.log(studentDocument);
 		const report_score = await studentReportScores.create({
-			user_id: 1,
+			user_id,
 			mathematics1,
 			mathematics2,
 			mathematics3,
