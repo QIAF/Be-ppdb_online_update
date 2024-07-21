@@ -16,7 +16,8 @@ module.exports = async (req, res, next) => {
 			include: ['Auth'],
 		});
 
-		req.user = user;
+		const userData = JSON.parse(JSON.stringify(user));
+		req.user = userData;
 		if (req.user === null) {
 			return next(new ApiError('Unauthorized, please re-login', 401));
 		}

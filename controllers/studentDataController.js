@@ -60,6 +60,9 @@ const getStudentDataById = async (req, res, next) => {
 	}
 };
 const createStudentData = async (req, res, next) => {
+	console.log(req.user);
+	console.log(`user id: ${req.user.id}`);
+	return;
 	const files = req.files;
 	const user_id = 1;
 	const {
