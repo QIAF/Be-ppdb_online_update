@@ -45,7 +45,6 @@ const createImage = async (req, res, next) => {
       graduation_certificate_highSchool: graduationCertificateHS.imagesUrl,
       report_scores: reportScores.imagesUrl,
     });
-
     res.status(200).json({
       status: "Success",
       message: "Student image successfully created",

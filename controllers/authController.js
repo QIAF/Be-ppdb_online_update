@@ -92,7 +92,6 @@ const login = async (req, res, next) => {
     return next (new ApiError(err.message, 500));
   }
 };
-
 module.exports ={
     register,
     login

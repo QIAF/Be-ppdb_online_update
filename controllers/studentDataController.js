@@ -1,5 +1,19 @@
 const { studentData, studentReportScores } = require("../models");
 const ApiError = require("../utils/apiError");
+const { google } = require("googleapis");
+const apiKey = require("../security/apiKey");
+const Readable = require("stream");
+const SCOPE = ["https://www.googleapis.com/auth/drive"];
+
+const authorize = async () => {
+  const jwtClient = new google.auth.JWT(
+    apiKey.client_email,
+    null,
+    apiKey.private_key,
+    SCOPE
+  );
+  return jwtClient;
+};
 
 const getStudentData = async (req, res, next) => {
   try {
@@ -51,8 +65,9 @@ const getStudentDataById = async (req, res, next) => {
   }
 };
 const createStudentData = async (req, res, next) => {
+  const files = req.files;
+  console.log(files);
   const user_id = 1;
-
   const {
     student_name,
     student_gender,
@@ -84,6 +99,7 @@ const createStudentData = async (req, res, next) => {
     school_address,
     ijazah_number,
     nisn,
+    upload_pdf,
     mathematics1,
     mathematics2,
     mathematics3,
@@ -130,7 +146,6 @@ const createStudentData = async (req, res, next) => {
   ) {
     return next(new ApiError("All scores are required", 400));
   }
-
   const scores = [
     mathematics1,
     mathematics2,
@@ -158,8 +173,10 @@ const createStudentData = async (req, res, next) => {
   console.log(totalScore);
   const average_report_score = totalScore / scores.length;
   console.log(average_report_score);
+      return
 
   try {
+    const studentDocument = files["studentDocument"];
     const report_score = await studentReportScores.create({
       user_id: 1,
       mathematics1,
@@ -185,6 +202,7 @@ const createStudentData = async (req, res, next) => {
       total_report_score: average_report_score,
     });
     console.log(report_score);
+
     const newStudentData = await studentData.create({
       user_id,
       student_name,
@@ -219,6 +237,41 @@ const createStudentData = async (req, res, next) => {
       nisn,
     });
     console.log(newStudentData);
+
+    const upload = async (authClient) => {
+      const fileBuffer = await Promise.all(
+        studentDocument.map(async (file) => {
+          return file.buffer;
+        })
+      );
+      return new Promise ((resolve, reject) => {
+        const drive = google.drive({
+          version: "v3",
+          auth: authClient,
+        });
+        drive.files.create(
+          {
+            resource: {
+              name: studentDocument[0].originalname || new Date(),
+              parents: ["18TWnXnlGLoSO5CsQanU9F7iFAfdvS0Dc"],
+            },
+            media: {
+              body: new Readable.PassThrough().end(fileBuffer[0]),
+              mimeType: "application/pdf",
+            },
+            fields: "id",
+          },
+          (err, file) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(file);
+          }
+        );
+      });
+    };
+    authorize().then(upload).catch((err) => console.log(err));
+
     res.status(200).json({
       status: "Success",
       message: " Student Data Successfully created",

@@ -135,6 +135,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      upload_pdf:{
+        type: Sequelize.Sequelize.ARRAY(Sequelize.TEXT),
+				allowNull: true,
+			},
       createdAt: {
         type: Sequelize.DATE
       },
