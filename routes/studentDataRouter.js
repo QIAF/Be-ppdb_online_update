@@ -15,18 +15,8 @@ const upload = require('../middlewares/upload');
 
 router.get('/', getStudentData);
 router.get('/:id', getStudentDataById);
-router.post('/create', createStudentData);
+router.post('/create', upload, createStudentData);
 router.patch('/update/:id', updateStudentData);
 router.delete('/delete/:id', deleteStudentData);
-
-// upload pdf
-router.post('/pdfUpload', upload, uploadDocument);
-router.get('/', getStudentData);
-router.get('/:id', getStudentDataById);
-// router.post("/uploadDocument", upload, createStudentData);
-router.patch('/update/:id', updateStudentData);
-router.delete('/delete/:id', deleteStudentData);
-
-router.post('/uploadDocument', upload, uploadDocument);
 
 module.exports = router;
